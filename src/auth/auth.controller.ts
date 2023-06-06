@@ -13,8 +13,17 @@ export class AuthController {
 
   @Post('signin')
   signin(@Body() dto: AuthDto) {
-    console.log(dto);
-    return 'I am sign i1';
+    return this.authService.signin(dto);
+  }
+
+  @Post('linkedinLogin')
+  linkedinLoginPost(@Body() dto: AuthDto) {
+    return this.authService.signin(dto);
+  }
+
+  @Post('linkedinLogin')
+  linkedinLoginGet(@Body() dto: AuthDto) {
+    return this.authService.signin(dto);
   }
 
   @Get('deleteAll')
