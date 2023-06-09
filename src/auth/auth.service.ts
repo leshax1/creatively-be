@@ -72,6 +72,12 @@ export class AuthService {
 
   async deleteAllUsers() {
     console.log('deleted');
+    const user = await this.prisma.user.findUnique({
+      where: {
+        email: 'leshax@gmail.com',
+      },
+    });
+    console.log('user', user);
     await this.prisma.user.deleteMany();
   }
 }
