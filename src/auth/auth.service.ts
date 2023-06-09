@@ -19,11 +19,15 @@ export class AuthService {
         email: dto?.email,
       },
     });
-    if (!user) throw new ForbiddenException('Credentials incorrect');
+    if (!user) throw new ForbiddenException(['Credentials incorrect']);
+    if (!user.password)
+      throw new ForbiddenException([
+        'User was logged with Social Networks and has no password',
+      ]);
 
     const pwMatches = await argon.verify(user.password, dto.password);
 
-    if (!pwMatches) throw new ForbiddenException('Credentials incorrect');
+    if (!pwMatches) throw new ForbiddenException(['Credentials incorrect']);
 
     console.log('user.id', user.id);
     console.log('user.email', user.email);
@@ -48,7 +52,9 @@ export class AuthService {
       return user;
     } catch (error) {
       if (error?.code == 'P2002') {
-        throw new ForbiddenException(['Credentials Taken']);
+        throw new ForbiddenException([
+          'Already registered or should login with social networks',
+        ]);
       }
       throw error;
     }

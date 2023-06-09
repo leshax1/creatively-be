@@ -26,17 +26,26 @@ export class AuthController {
   }
 
   @Get('linkedinLogin')
-  @UseGuards(AuthGuard('linkedin'))
+  @UseGuards(AuthGuard('linkedin-login'))
   linkedinLogin() {
     return 'linkedInLogin';
   }
 
   @Get('linkedinCallback')
-  @UseGuards(AuthGuard('linkedin'))
-  linkedinCallback(@Req() req) {
-    const token = this.authService.signToken(req.user.id, req.user.email);
-    console.log(token);
-    return token;
+  @UseGuards(AuthGuard('linkedin-login'))
+  @Redirect()
+  async linkedinLoginCallback(@Req() req) {
+    const token = await this.authService.signToken(req.user.id, req.user.email);
+
+    return {
+      url: 'http://localhost:4200/linkedinLogin?token=' + token.access_token,
+    };
+  }
+
+  @Get('linkedinGrantAccess')
+  @UseGuards(AuthGuard('jwt'))
+  linkedinGrantAccessLogin() {
+    return 'linkedinGrantAccessLogin';
   }
 
   @Get('deleteAll')

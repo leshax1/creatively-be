@@ -5,12 +5,15 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-linkedin-oauth2';
 
 @Injectable()
-export class LinkedInStrategy extends PassportStrategy(Strategy, 'linkedin') {
+export class LinkedInLoginStrategy extends PassportStrategy(
+  Strategy,
+  'linkedin-login',
+) {
   constructor(private config: ConfigService, private prisma: PrismaService) {
     super({
       clientID: config.get('linkedinClientId'),
       clientSecret: config.get('linkedinSecret'),
-      callbackURL: 'http://localhost:4200/linkedinLogin',
+      callbackURL: 'http://localhost:3333/auth/linkedinCallback',
       scope: ['r_emailaddress', 'r_liteprofile'],
     });
   }
@@ -27,6 +30,8 @@ export class LinkedInStrategy extends PassportStrategy(Strategy, 'linkedin') {
       update: {
         linkedInAccessToken: accessToken,
         linkedInAccessTokenExpirationDate: in60daysDate,
+        firstName: profile?.name?.givenName,
+        lastName: profile?.name?.familyName,
       },
       create: {
         email: profile.emails[0].value,
