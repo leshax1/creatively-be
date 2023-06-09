@@ -6,10 +6,13 @@ import {
   UseGuards,
   Req,
   Redirect,
+  Query,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthDto } from './dto/auth.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { User } from '@prisma/client';
+import { GetUser } from './decorators/get-user.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -42,10 +45,16 @@ export class AuthController {
     };
   }
 
-  @Get('linkedinGrantAccess')
+  @Post('updateLinkedInAccessToken')
   @UseGuards(AuthGuard('jwt'))
-  linkedinGrantAccessLogin() {
-    return 'linkedinGrantAccessLogin';
+  async updateLinkedInAccessToken(
+    @GetUser() user: User,
+    @Body() body: { accessToken: string },
+  ) {
+    return await this.authService.updateLinkedInAccessToken(
+      user.email,
+      body.accessToken,
+    );
   }
 
   @Get('deleteAll')
