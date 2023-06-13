@@ -40,7 +40,10 @@ export class SocialController {
     const token = await this.authService.signToken(req.user.id, req.user.email);
 
     return {
-      url: 'http://localhost:4200/linkedinLogin?token=' + token.access_token,
+      url:
+        this.config.get('angularUrl') +
+        '/linkedinLogin?token=' +
+        token.access_token,
     };
   }
 

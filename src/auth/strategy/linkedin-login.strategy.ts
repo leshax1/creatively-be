@@ -13,7 +13,7 @@ export class LinkedInLoginStrategy extends PassportStrategy(
     super({
       clientID: config.get('linkedinClientId'),
       clientSecret: config.get('linkedinSecret'),
-      callbackURL: 'http://localhost:3333/social/linkedinCallback',
+      callbackURL: config.get('apiUrl') + '/social/linkedinCallback',
       scope: ['r_emailaddress', 'r_liteprofile', 'w_member_social'],
     });
   }
