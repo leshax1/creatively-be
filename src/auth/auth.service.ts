@@ -86,23 +86,4 @@ export class AuthService {
     console.log('user', user);
     await this.prisma.user.deleteMany();
   }
-
-  async updateLinkedInAccessToken(email: string, accessToken: string) {
-    const in60daysDate = new Date(
-      new Date(Date.now() + 86400000 * 60),
-    ).toISOString();
-
-    const user = await this.prisma.user.update({
-      where: {
-        email: email,
-      },
-      data: {
-        linkedInAccessToken: accessToken,
-        linkedInAccessTokenExpirationDate: in60daysDate,
-      },
-    });
-
-    console.log('updateLinkedInAccessToken', user);
-    return user;
-  }
 }

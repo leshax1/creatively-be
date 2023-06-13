@@ -13,21 +13,25 @@ export class LinkedInLoginStrategy extends PassportStrategy(
     super({
       clientID: config.get('linkedinClientId'),
       clientSecret: config.get('linkedinSecret'),
-      callbackURL: 'http://localhost:3333/auth/linkedinCallback',
-      scope: ['r_emailaddress', 'r_liteprofile'],
+      callbackURL: 'http://localhost:3333/social/linkedinCallback',
+      scope: ['r_emailaddress', 'r_liteprofile', 'w_member_social'],
     });
   }
 
   async validate(accessToken, refreshToken, profile) {
+    console.log('!!!!!!!!!');
     const in60daysDate = new Date(
       new Date(Date.now() + 86400000 * 60),
     ).toISOString();
 
+    console.log('profile?.id', profile.id);
+    console.log('profile', profile);
     const user = await this.prisma.user.upsert({
       where: {
         email: profile.emails[0].value,
       },
       update: {
+        linkedinProfileId: profile?.id,
         linkedInAccessToken: accessToken,
         linkedInAccessTokenExpirationDate: in60daysDate,
         firstName: profile?.name?.givenName,
@@ -35,8 +39,9 @@ export class LinkedInLoginStrategy extends PassportStrategy(
       },
       create: {
         email: profile.emails[0].value,
-        firstName: profile?.givenName,
-        lastName: profile?.familyName,
+        firstName: profile?.name.givenName,
+        lastName: profile?.name.familyName,
+        linkedinProfileId: profile?.id,
         linkedInAccessToken: accessToken,
         linkedInAccessTokenExpirationDate: in60daysDate,
       },
