@@ -14,7 +14,7 @@ model User {
     updatedAt                         DateTime?
     email                             String     @unique
     password                          String?
-    linkedinProfileId                 String?    @unique
+    linkedinProfileId                 String?
     linkedInAccessToken               String?
     linkedInAccessTokenExpirationDate DateTime?
     firstName                         String?
